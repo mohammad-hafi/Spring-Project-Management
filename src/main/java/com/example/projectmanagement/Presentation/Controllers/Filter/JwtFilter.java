@@ -10,6 +10,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -49,7 +50,12 @@ public class JwtFilter extends OncePerRequestFilter {
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                     principal, null, principal.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            chain.doFilter(request, response);
+            MDC.put("userId", String.valueOf(claims.userId()));
+            try {
+                chain.doFilter(request, response);
+            } finally {
+                MDC.remove("userId");
+            }
         } catch (JwtException | IllegalArgumentException ex) {
             SecurityContextHolder.clearContext();
             errorWriter.write(request, response, HttpStatus.UNAUTHORIZED.value(),
