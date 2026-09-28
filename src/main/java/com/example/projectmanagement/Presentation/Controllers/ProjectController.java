@@ -3,20 +3,33 @@ import com.example.projectmanagement.Application.Dtos.*;
 import com.example.projectmanagement.Application.Interfaces.ProjectCases;
 import com.example.projectmanagement.Application.Services.UserPrincipal;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.*;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.validation.annotation.Validated;
 import java.net.URI;
 
 @RestController @RequestMapping("/projects")
 @RequiredArgsConstructor
+@Validated
 @SecurityRequirement(name="bearerAuth")
 public class ProjectController {
 
  private final ProjectCases projects;
+
+ @GetMapping
+ @PreAuthorize("hasAuthority('project:read')")
+ public ResponseEntity<PaginatedProjectsResponseDto> list(
+   @AuthenticationPrincipal UserPrincipal principal,
+   @RequestParam(defaultValue = "1") @Min(1) int pageNumber,
+   @RequestParam(defaultValue = "10") @Min(1) @Max(100) int pageSize) {
+  return ResponseEntity.ok(projects.getProjects(principal.id(), pageNumber, pageSize));
+ }
 
  @PostMapping
  @PreAuthorize("hasAuthority('project:create')")

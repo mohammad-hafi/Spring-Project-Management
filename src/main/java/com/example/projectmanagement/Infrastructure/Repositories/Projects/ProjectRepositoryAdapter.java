@@ -1,8 +1,9 @@
 package com.example.projectmanagement.Infrastructure.Repositories.Projects;
 
 import com.example.projectmanagement.Domain.Entities.Project;
-import com.example.projectmanagement.Domain.Entities.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -22,6 +23,11 @@ public class ProjectRepositoryAdapter implements ProjectAdapter {
     @Override
     public Optional<Project> findByIdAndOwnerId(long id, long ownerId) {
         return repository.findByIdAndUserID_Id(id, ownerId);
+    }
+
+    @Override
+    public Page<Project> findByOwnerId(long ownerId, Pageable pageable) {
+        return repository.findByUserID_Id(ownerId, pageable);
     }
 
     @Override

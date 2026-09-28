@@ -11,10 +11,14 @@ import com.example.projectmanagement.Infrastructure.Repositories.StatusRepositor
 import com.example.projectmanagement.Infrastructure.Repositories.Users.UserAdapter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -23,6 +27,23 @@ public class ProjectUseCase implements ProjectCases {
     private final ProjectAdapter projects;
     private final UserAdapter users;
     private final StatusRepository statuses;
+
+    @Override
+    @Transactional(readOnly = true)
+    public PaginatedProjectsResponseDto getProjects(long userId, int pageNumber, int pageSize) {
+        Page<Project> page = projects.findByOwnerId(
+                userId,
+                PageRequest.of(pageNumber - 1, pageSize, Sort.by(Sort.Direction.DESC, "createdOn"))
+        );
+        List<ProjectResponseDto> items = page.getContent().stream().map(ProjectUseCase::response).toList();
+        return new PaginatedProjectsResponseDto(
+                items,
+                page.getTotalElements(),
+                page.getTotalPages(),
+                pageNumber,
+                pageSize
+        );
+    }
 
     @Override @Transactional
     public ProjectResponseDto addProject(ProjectCreateDto dto,long userId) {
