@@ -33,12 +33,12 @@ class UserUseCaseTest {
   assertThrows(ConflictException.class,()->service.registerUser(register()));
  }
  @Test void registrationHashesPasswordAndAssignsMember() {
-  Status status=new Status(); status.setId(1); status.setName("ACTIVE"); when(statuses.findByNameIgnoreCase("ACTIVE")).thenReturn(Optional.of(status));
+  Status status=new Status(); status.setId(1); when(statuses.findById(1)).thenReturn(Optional.of(status));
   when(encoder.encode("Password1!")).thenReturn("hash"); when(users.save(any())).thenAnswer(inv->{User u=inv.getArgument(0);u.setId(7L);return u;});
   when(authorization.assignMemberRole(7)).thenReturn(1);
   UserResponseDto result=service.registerUser(register());
   assertEquals(7,result.id()); assertEquals("a@b.com",result.email()); verify(authorization).assignMemberRole(7);
  }
- private static UserRegisterDtos register(){return new UserRegisterDtos("Alex","Description","A@B.COM","Engineering","Password1!","Developer","ACTIVE");}
+ private static UserRegisterDtos register(){return new UserRegisterDtos("Alex","Description","A@B.COM","Engineering","Password1!","Developer",1);}
  private static User user(){User u=new User();u.setId(7L);u.setEmail("a@b.com");u.setPassword("hash");return u;}
 }

@@ -13,8 +13,8 @@ class ProjectUseCaseTest {
  @Mock ProjectAdapter projects; @Mock UserAdapter users; @Mock StatusRepository statuses; @InjectMocks ProjectUseCase service;
  @Test void foreignProjectIsHiddenAsNotFound(){Project p=project();p.getUserID().setId(8L);when(projects.findById(2)).thenReturn(Optional.of(p));NotFoundException ex=assertThrows(NotFoundException.class,()->service.getProjectById(2,7));assertEquals("Project not found",ex.getMessage());}
  @Test void missingProjectRemainsNotFound(){when(projects.findById(2)).thenReturn(Optional.empty());NotFoundException ex=assertThrows(NotFoundException.class,()->service.getProjectById(2,7));assertEquals("Project not found",ex.getMessage());}
- @Test void updatePreservesOwnerAndCreationTimestamps(){Project p=project();Instant created=p.getCreatedOn(),started=p.getStartDate();when(projects.findById(2)).thenReturn(Optional.of(p));when(statuses.findByNameIgnoreCase("ACTIVE")).thenReturn(Optional.of(p.getStatusID()));when(projects.save(p)).thenReturn(p);
-  service.updateProject(2,new ProjectUpdateDto("Updated","desc",Instant.now().plusSeconds(3600),2,"ACTIVE"),7);
+ @Test void updatePreservesOwnerAndCreationTimestamps(){Project p=project();Instant created=p.getCreatedOn(),started=p.getStartDate();when(projects.findById(2)).thenReturn(Optional.of(p));when(statuses.findById(1)).thenReturn(Optional.of(p.getStatusID()));when(projects.save(p)).thenReturn(p);
+  service.updateProject(2,new ProjectUpdateDto("Updated","desc",Instant.now().plusSeconds(3600),2,1),7);
   assertEquals(created,p.getCreatedOn());assertEquals(started,p.getStartDate());assertEquals(7,p.getUserID().getId());assertNotNull(p.getModifiedOn());}
  @Test void deletesOwnedProject(){Project p=project();when(projects.findById(2)).thenReturn(Optional.of(p));service.deleteProject(2,7);verify(projects).delete(p);}
  @Test void doesNotDeleteForeignProject(){Project p=project();p.getUserID().setId(8L);when(projects.findById(2)).thenReturn(Optional.of(p));assertThrows(NotFoundException.class,()->service.deleteProject(2,7));verify(projects,never()).delete(any());}

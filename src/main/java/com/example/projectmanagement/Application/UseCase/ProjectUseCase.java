@@ -151,10 +151,10 @@ public class ProjectUseCase implements ProjectCases {
         return project;
     }
 
-    private Status status(String name) {
-        return statuses.findByNameIgnoreCase(name.trim()).orElseThrow(() -> {
+    private Status status(int id) {
+        return statuses.findById(id).orElseThrow(() -> {
             log.atWarn()
-                    .addKeyValue("status", name)
+                    .addKeyValue("statusId", id)
                     .log("Project status not found");
             return new NotFoundException("Status not found");
         });
