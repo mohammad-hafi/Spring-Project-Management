@@ -115,6 +115,26 @@ public class ProjectUseCase implements ProjectCases {
         }
     }
 
+    @Override
+    @Transactional
+    public void deleteProject(long projectId,long userId) {
+        try {
+            Project project = owned(projectId,userId);
+            projects.delete(project);
+            log.atInfo()
+                    .addKeyValue("projectId", projectId)
+                    .log("Project deleted");
+        } catch (NotFoundException exception) {
+            throw exception;
+        } catch (RuntimeException exception) {
+            log.atError()
+                    .addKeyValue("projectId", projectId)
+                    .setCause(exception)
+                    .log("Failed to delete project");
+            throw exception;
+        }
+    }
+
     private Project owned(long id,long userId) {
         Project project = projects.findById(id).orElseThrow(() -> {
             log.atWarn()
@@ -131,10 +151,10 @@ public class ProjectUseCase implements ProjectCases {
         return project;
     }
 
-    private Status status(int id) {
-        return statuses.findById(id).orElseThrow(() -> {
+    private Status status(String name) {
+        return statuses.findByNameIgnoreCase(name.trim()).orElseThrow(() -> {
             log.atWarn()
-                    .addKeyValue("statusId", id)
+                    .addKeyValue("status", name)
                     .log("Project status not found");
             return new NotFoundException("Status not found");
         });

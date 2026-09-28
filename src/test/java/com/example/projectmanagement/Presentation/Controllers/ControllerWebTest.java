@@ -18,6 +18,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import java.time.Instant; import java.util.Set;
 import static org.mockito.ArgumentMatchers.anyString; import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 @WebMvcTest({ProjectController.class,UserController.class})
@@ -31,4 +32,5 @@ class ControllerWebTest {
  @Test void registrationValidationIs400() throws Exception {mvc.perform(post("/user/register").contentType(MediaType.APPLICATION_JSON).content("{}")) .andExpect(status().isBadRequest()).andExpect(jsonPath("$.code").value("VALIDATION_FAILED"));}
  @Test void loginIgnoresStaleAuthorizationHeader() throws Exception {when(users.loginUser(org.mockito.ArgumentMatchers.any(UserLoginDtos.class))).thenReturn(new LoginResponseDto("new-token"));mvc.perform(post("/user/login").header("Authorization","Bearer expired-token").contentType(MediaType.APPLICATION_JSON).content("{\"email\":\"mohammad.hafi@example.com\",\"password\":\"SecurePass123!\"}")) .andExpect(status().isOk()).andExpect(jsonPath("$.token").value("new-token"));}
  @Test void malformedBearerTokenIs401() throws Exception {mvc.perform(get("/project/1").header("Authorization","Basic x")).andExpect(status().isUnauthorized()).andExpect(jsonPath("$.code").value("INVALID_TOKEN"));}
+ @Test void deleteOwnedProjectIs204() throws Exception {when(jwt.parse(anyString())).thenReturn(new JwtClaims(7L,"a@b.com",Set.of("project:delete")));mvc.perform(delete("/projects/4").header("Authorization","Bearer token")).andExpect(status().isNoContent());verify(projects).deleteProject(4,7);}
 }

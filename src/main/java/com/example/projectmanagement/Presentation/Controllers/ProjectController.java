@@ -47,4 +47,9 @@ public class ProjectController {
  public ResponseEntity<ProjectResponseDto> get(@PathVariable long id,@AuthenticationPrincipal UserPrincipal principal) {
   return ResponseEntity.ok(projects.getProjectById(id,principal.id()));
  }
+ @DeleteMapping("/{id}") @PreAuthorize("hasAuthority('project:delete')")
+ public ResponseEntity<Void> delete(@PathVariable long id,@AuthenticationPrincipal UserPrincipal principal) {
+  projects.deleteProject(id,principal.id());
+  return ResponseEntity.noContent().build();
+ }
 }

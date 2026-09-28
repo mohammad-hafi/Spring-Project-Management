@@ -31,7 +31,8 @@ public class UserUseCase implements UserCases {
     public UserResponseDto registerUser(UserRegisterDtos request) {
         String email = normalize(request.email());
         if (users.existsByEmail(email)) throw new ConflictException("Email already exists");
-        Status status = statuses.findById(request.statusId()).orElseThrow(() -> new NotFoundException("Status not found"));
+        Status status = statuses.findByNameIgnoreCase(request.statusId().trim())
+                .orElseThrow(() -> new NotFoundException("Status not found"));
         User user = new User();
         user.setName(request.name().trim()); user.setDescription(request.description().trim());
         user.setDepartment(request.department().trim()); user.setJobTitle(request.jobTitle().trim());

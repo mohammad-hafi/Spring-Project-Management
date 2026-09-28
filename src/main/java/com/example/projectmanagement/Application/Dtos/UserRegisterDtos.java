@@ -34,7 +34,7 @@ public record UserRegisterDtos(
         String password,
 
         @NotBlank @Size(max = 50) String jobTitle,
-        @NotNull @Positive Integer statusId
+        @NotBlank @Size(max = 50) String statusId
 ) {
 
 }

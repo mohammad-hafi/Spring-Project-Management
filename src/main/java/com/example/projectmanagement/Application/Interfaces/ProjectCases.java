@@ -5,4 +5,5 @@ public interface ProjectCases {
     ProjectResponseDto addProject(ProjectCreateDto dto,long userId);
     ProjectResponseDto updateProject(long projectId,ProjectUpdateDto dto,long userId);
     ProjectResponseDto getProjectById(long id,long userId);
+    void deleteProject(long projectId,long userId);
 }

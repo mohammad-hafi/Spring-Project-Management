@@ -119,7 +119,7 @@ curl -X POST http://localhost:9090/user/register \
     "department": "Engineering",
     "password": "Password1!",
     "jobTitle": "Developer",
-    "statusId": 1
+    "statusId": "ACTIVE"
   }'
 ```
 
@@ -157,7 +157,7 @@ curl -X POST http://localhost:9090/project \
     "description": "Refresh the company website",
     "targetDate": "2027-01-31T12:00:00Z",
     "priorityLevel": 2,
-    "statusId": 1
+    "statusId": "ACTIVE"
   }'
 ```
 
@@ -177,7 +177,7 @@ curl -X PUT http://localhost:9090/project/1 \
     "description": "Updated project scope",
     "targetDate": "2027-02-28T12:00:00Z",
     "priorityLevel": 1,
-    "statusId": 1
+    "statusId": "ACTIVE"
   }'
 ```
 

@@ -11,4 +11,5 @@ public interface ProjectAdapter {
     Optional<Project> findByIdAndOwnerId(long id, long ownerId);
     Page<Project> findByOwnerId(long ownerId, Pageable pageable);
     Project save(Project project);
+    void delete(Project project);
 }

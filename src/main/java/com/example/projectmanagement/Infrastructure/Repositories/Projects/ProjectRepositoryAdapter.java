@@ -34,4 +34,9 @@ public class ProjectRepositoryAdapter implements ProjectAdapter {
     public Project save(Project project) {
         return repository.save(project);
     }
+
+    @Override
+    public void delete(Project project) {
+        repository.delete(project);
+    }
 }
