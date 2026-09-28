@@ -13,6 +13,10 @@ jobs:
         env: {JWT_SECRET: 01234567890123456789012345678901}
       - uses: dependency-check/Dependency-Check_Action@main
         with: {project: ProjectManagement, path: '.', format: HTML}
+        env:
+          # This Docker action needs the JDK path available inside its own image,
+          # not the runner path exported by actions/setup-java.
+          JAVA_HOME: /opt/jdk
   secrets:
     runs-on: ubuntu-latest
     steps:
