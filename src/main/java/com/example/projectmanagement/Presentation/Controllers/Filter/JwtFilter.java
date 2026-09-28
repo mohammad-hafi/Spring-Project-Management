@@ -28,7 +28,7 @@ public class JwtFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String path = request.getRequestURI().substring(request.getContextPath().length());
-        return "/user/login".equals(path) || "/user/register".equals(path);
+        return "/Users/login".equals(path) || "/Users/register".equals(path);
     }
 
     @Override

@@ -49,7 +49,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/user/register", "/user/login", "/swagger-ui/**", "/v3/api-docs/**",
+                        .requestMatchers("/Users/register", "/Users/login", "/swagger-ui/**", "/v3/api-docs/**",
                                 "/actuator/health/**").permitAll()
                         .anyRequest().authenticated())
                 .exceptionHandling(errors -> errors
